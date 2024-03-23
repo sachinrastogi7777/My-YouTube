@@ -11,11 +11,17 @@ import {
 import MainContainer from "./components/MainContainer";
 import WatchPage from "./components/WatchPage";
 import SearchResultContainer from "./components/SearchResultContainer";
+import Error from "./Layout/Error";
+import Category from "./components/Category";
+import Subscriptions from "./components/Subscriptions";
+import WatchLater from "./components/WatchLater";
+import LikedVideos from "./components/LikedVideos";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <Body />,
+    errorElement: <Error />,
     children: [
       {
         path: "/",
@@ -28,6 +34,22 @@ const appRouter = createBrowserRouter([
       {
         path: "/results",
         element: <SearchResultContainer />,
+      },
+      {
+        path: "/subscriptions",
+        element: <Subscriptions />,
+      },
+      {
+        path: "/feed/:category",
+        element: <Category />,
+      },
+      {
+        path: "/watchlater",
+        element: <WatchLater />,
+      },
+      {
+        path: "/liked",
+        element: <LikedVideos />,
       },
     ],
   },

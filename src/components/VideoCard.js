@@ -1,59 +1,54 @@
 import React from "react";
 import moment from "moment";
-import { timeDiff } from "../utils/helper";
+import { calculateDuration, countViews, timeDiff } from "../utils/helper";
 import "moment-precise-range-plugin";
+import { Link } from "react-router-dom";
+import { LuDot } from "react-icons/lu";
 
 const VideoCard = ({ videoInfo }) => {
-  const { contentDetails, snippet, statistics } = videoInfo;
-  const duration = contentDetails.duration;
+  const { id, contentDetails, snippet, statistics } = videoInfo;
+  const { duration } = contentDetails;
+  const { viewCount } = statistics;
   const { channelTitle, thumbnails, title, publishedAt } = snippet;
 
-  const totalViews = statistics && Math.trunc(statistics.viewCount / 1000);
-  const finalView =
-    totalViews >= 1000
-      ? (totalViews / 1000).toFixed(1) * 1 + "M"
-      : totalViews + "K";
+  const totalViews = countViews(viewCount);
 
-  let num = "";
-  let obj = { H: "00", M: "00", S: "00" };
-  for (let i = 2; i < duration.length; i++) {
-    if (["H", "M", "S"].includes(duration[i])) {
-      if (num.length === 1) {
-        obj[duration[i]] = "0" + num;
-        num = "";
-      } else {
-        obj[duration[i]] = num;
-        num = "";
-      }
-    } else {
-      num += duration[i];
-    }
-  }
+  const videoDuration = calculateDuration(duration);
 
   let date1 = moment(publishedAt).utc().format("YYYY-MM-DD HH:mm:ss");
   let date2 = moment();
   const diff = timeDiff(date1, date2);
 
   return (
-    <div className="p-2 m-2 w-80">
-      <div className="relative">
-        <img
-          className="rounded-xl"
-          alt="thumbnail"
-          src={thumbnails.medium.url}
-        />
-        <div className="px-1 absolute bottom-1 right-1 font-thin text-white text-sm bg-neutral-800 w-fit rounded-sm">
-          {obj.H + ":" + obj.M + ":" + obj.S}
+    <div className="w-72 mb-8">
+      <Link to={"/watch?v=" + id} className="cursor-pointer">
+        <div
+          id="video-thumbnail-container"
+          className="relative overflow-hidden"
+        >
+          <img
+            className="rounded-lg hover:rounded-none"
+            alt="thumbnail"
+            src={thumbnails.medium.url}
+          />
+          <p className="absolute bottom-1 right-1 text-xs text-white font-semibold bg-black py-1 px-[5px] rounded-md">
+            {videoDuration}
+          </p>
         </div>
-      </div>
-      <ul>
-        <li className="font-bold py-2">{title}</li>
-        <li>{channelTitle}</li>
-        <div className="flex">
-          <li>{finalView} views • </li>
-          <li className="mx-1">{diff}</li>
+        <div className="px-[6px]">
+          <h2 className="font-bold text-base mt-[6px]">{title}</h2>
+          <h3 className="text-sm mb-[2px] font-semibold text-gray-500">
+            {channelTitle}
+          </h3>
+          <p className="flex text-sm text-gray-500 items-center">
+            {totalViews} views
+            <span className="text-xl mt-0.5">
+              <LuDot />
+            </span>
+            {diff}
+          </p>
         </div>
-      </ul>
+      </Link>
     </div>
   );
 };

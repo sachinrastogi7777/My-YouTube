@@ -27,6 +27,36 @@ export const timeDiff = (date1, date2) => {
     : diff.seconds + " second ago";
 };
 
+export const calculateDuration = (duration) => {
+  const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+
+  if (!match) {
+    return "---";
+  }
+
+  const hours = match[1] ? parseInt(match[1], 10) : 0;
+  const minutes = match[2] ? parseInt(match[2], 10) : 0;
+  const seconds = match[3] ? parseInt(match[3], 10) : 0;
+
+  const formattedHours = hours > 0 ? `${hours}:` : "";
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+
+  return `${formattedHours}${minutes}:${formattedSeconds}`;
+};
+
+export const countViews = (numCount) => {
+  const count = Number(numCount);
+  if (count < 1000) {
+    return `${count}`;
+  } else if (count < 1000000) {
+    return `${Math.floor(count / 1000)}K`;
+  } else if (count < 1000000000) {
+    return `${(count / 1000000).toFixed(1)}M`;
+  } else {
+    return `${(count / 1000000000).toFixed(1)}B`;
+  }
+};
+
 const firstNames = [
   "Aarav",
   "Aditi",

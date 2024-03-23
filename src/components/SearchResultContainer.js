@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import {
-  YOUTUBE_SEARCH_RESULT_API,
-  YOUTUBE_SEARCH_RESULT_API_SECOND,
-} from "../utils/constant";
-import ButtonsList from "./ButtonsList";
+import { useSearchParams } from "react-router-dom";
+import { YOUTUBE_SEARCH_RESULT_API } from "../utils/constant";
 import SearchResultCard from "./SearchResultCard";
+import { useSelector } from "react-redux";
 
 const SearchResultContainer = () => {
   const [searchParams] = useSearchParams();
   const [searchResultResponse, setSearchResultResponse] = useState([]);
+  const isSidebarOpen = useSelector((store) => store.app.isMenuOpen);
+
+  const style = {
+    display: window.innerWidth < 640 && isSidebarOpen ? "none" : "block",
+  };
 
   useEffect(() => {
     handleSearchResult();
@@ -19,24 +21,21 @@ const SearchResultContainer = () => {
     const searchResult = await fetch(
       YOUTUBE_SEARCH_RESULT_API +
         searchParams.get("search_query").split(" ").join("%20") +
-        YOUTUBE_SEARCH_RESULT_API_SECOND
+        "&type=video&key=" +
+        process.env.REACT_APP_GOOGLE_API_KEY
     );
     const jsonResponse = await searchResult.json();
     setSearchResultResponse(jsonResponse.items);
   };
 
   return (
-    <div className="-ml-10">
-      <ButtonsList />
-      {searchResultResponse &&
-        searchResultResponse.map((searchResult) => (
-          <Link
-            to={"/watch?v=" + searchResult.id.videoId}
-            key={searchResult.id.videoId}
-          >
-            <SearchResultCard cardInfo={searchResult} />
-          </Link>
-        ))}
+    <div className="col-span-11" style={style}>
+      {searchResultResponse.map((searchResult) => (
+        <SearchResultCard
+          key={searchResult.id.videoId}
+          cardInfo={searchResult}
+        />
+      ))}
     </div>
   );
 };

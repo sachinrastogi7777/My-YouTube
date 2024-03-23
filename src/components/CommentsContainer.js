@@ -1,4 +1,5 @@
 import React from "react";
+import { FaUserCircle } from "react-icons/fa";
 
 const commentsData = [
   {
@@ -67,11 +68,9 @@ const Comment = ({ data }) => {
   const { name, text } = data;
   return (
     <div className="flex py-2 px-2 my-1 bg-gray-100 rounded-md">
-      <img
-        className="h-6 rounded-full"
-        alt="user-icon"
-        src="./Assets/user-icon.png"
-      />
+      <div className="relative">
+        <FaUserCircle id="profile-icon" className="text-2xl md:text-3xl" />
+      </div>
       <div className="px-2">
         <p className="font-bold">{name}</p>
         <p>{text}</p>

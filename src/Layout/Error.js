@@ -1,5 +1,4 @@
 import { Link, useRouteError } from "react-router-dom";
-// import notFoundImg from "../assets/not-found-monkey.png";
 
 const Error = () => {
   const err = useRouteError();
